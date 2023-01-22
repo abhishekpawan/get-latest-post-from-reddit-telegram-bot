@@ -1,18 +1,13 @@
 const request = require("request");
-require("dotenv").config()
+require("dotenv").config();
 const fs = require("fs");
 const { convert } = require("html-to-text");
-const TelegramBot = require('node-telegram-bot-api');
+const TelegramBot = require("node-telegram-bot-api");
 
 const TOKEN = process.env.TELEGRAM_TOKEN;
-const bot = new TelegramBot(TOKEN,{polling:true});
-let chat_id=908936635;
+const bot = new TelegramBot(TOKEN, { polling: true });
+let chat_id = 908936635;
 
-// bot.on('message', (message)=>{
-//   chat_id = message.from.id
-//   console.log(message.text);
-//   console.log(message.from.id);
-// })
 let url = "https://www.reddit.com/r/marvelmemes/new";
 
 let postCaption = "abc";
@@ -75,7 +70,10 @@ const gettingLatestRedditPost = () => {
             latestPostData.image_url = latestPostImageUrl;
 
             console.log(latestPostData);
-            bot.sendMessage(chat_id, `Caption:${latestPostData.caption} \nImage Link:${latestPostData.image_url}`)
+            bot.sendMessage(
+              chat_id,
+              `Caption:${latestPostData.caption} \nImage Link:${latestPostData.image_url}`
+            );
           }
 
           // console.log(latestPostCaption);
@@ -93,7 +91,12 @@ const gettingLatestRedditPost = () => {
   });
 };
 
-setInterval(() => {
-  // console.log("GettingLatestRedditPost has been Started!\n")
-  gettingLatestRedditPost();
-}, 10000);
+bot.on("message", (message) => {
+  console.log(message.text);
+  console.log(message.from.id);
+  if (message.text === "/start") {
+    setInterval(() => {
+      gettingLatestRedditPost();
+    }, 10000);
+  }
+});
